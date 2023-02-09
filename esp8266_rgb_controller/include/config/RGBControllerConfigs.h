@@ -12,10 +12,4 @@ struct RGBControllerConfig
     std::uint8_t blue_pin;
 };
 
-/**
- * Rethink this
- */
-RGBControllerConfig controller_1 = {false, 1,0,0,0};
-RGBControllerConfig controller_2 = {false, 2,0,0,0};
-
 #endif

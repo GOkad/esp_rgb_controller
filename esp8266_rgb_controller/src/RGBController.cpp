@@ -21,3 +21,36 @@ void RGBController::set_color(std::uint8_t red, std::uint8_t green, std::uint8_t
     digitalWrite(m_green_pin, green);
     digitalWrite(m_blue_pin, blue);
 }
+
+// Useful for debugging
+void RGBController::print_data()
+{
+    Serial.println("---[CONTROLLER_DATA]---");
+    Serial.print("ID: ");
+    Serial.println(m_id);
+
+    Serial.println(
+        m_common_cathode ? "COMMON CATHODE" : "COMMON ANODE"
+    );
+    
+    Serial.print("red_pin: ");
+    Serial.println(m_red_pin);
+    Serial.print(" | ");
+    Serial.print("val :");
+    Serial.println(digitalRead(m_red_pin));
+
+    Serial.print("green_pin: ");
+    Serial.println(m_green_pin);
+    Serial.print(" | ");
+    Serial.print("val :");
+    Serial.println(digitalRead(m_green_pin));
+
+    Serial.print("blue_pin: ");
+    Serial.print(m_blue_pin);
+    Serial.print(" | ");
+    Serial.print("val :");
+    Serial.println(digitalRead(m_blue_pin));
+    
+    Serial.println("---[CONTROLLER_DATA]---");
+
+}
