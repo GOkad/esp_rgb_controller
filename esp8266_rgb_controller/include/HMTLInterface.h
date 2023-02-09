@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+#ifndef HMTL_INTERFACE
+#define HMTL_INTERFACE
+
+const char index_html[] PROGMEM = R"rawliteral(
+    <!DOCTYPE html>
 <html>
 <head>
     <style>
@@ -116,3 +120,6 @@
     </div>
 </body>
 </html>
+)rawliteral";
+
+#endif
