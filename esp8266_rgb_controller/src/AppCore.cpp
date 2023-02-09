@@ -27,4 +27,16 @@ void AppCore::register_web_routes()
     m_server->on("/", HTTP_GET, [](AsyncWebServerRequest *request){
         request->send(200, "text/html", index_html);
     });
+
+    m_server->on("/get", HTTP_GET, [](AsyncWebServerRequest *request){
+        std::string response = "{\"message\":\"Route is in development!\"}";
+        Serial.println(response.c_str());
+        request->send(400, "application/json", response.c_str());
+    });
+
+    m_server->on("/update", HTTP_GET, [](AsyncWebServerRequest *request){
+        std::string response = "{\"message\":\"Route is in development!\"}";
+        Serial.println(response.c_str());
+        request->send(400, "application/json", response.c_str());
+    });
 }

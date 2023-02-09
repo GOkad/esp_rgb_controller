@@ -1,6 +1,6 @@
 #include <Arduino.h>
 /**
- * NOTE: remove the '.' 
+ * NOTE: remove the '.' in front of 'WebServerConfig.h'  
  * Update 'config/WebServerConfig.h' with your credentials 
  */
 #include "config/.WebServerConfig.h"
@@ -13,5 +13,4 @@ void setup() {
 
 void loop() {
   static AppCore core(WebServerConfig{});
-
 }
