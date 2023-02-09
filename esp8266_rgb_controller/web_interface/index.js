@@ -24,7 +24,7 @@ function toHex( int ) {
 }
 
 function build() {
-    // request('/get', (data) => {
+    request('/get', (data) => {
         main.innerHTML = '';
         const data = [
             {
@@ -52,11 +52,24 @@ function build() {
                 </div>
             `;
         });
-    // });
+    });
+
+    // document.querySelector('.rgb-controller button').click();
 }
 
-function update(container) {
+function update(cont) {
+    const input = cont.querySelector("input");
+    const color = input.value;
 
+    const url = `/update?id=${input.name}&`+
+        `red=${parseInt(color[1]+color[2], 16)}&`+
+        `green=${parseInt(color[3]+color[4], 16)}&`+
+        `blue=${parseInt(color[5]+color[6], 16)}`;
+    
+        console.log(url);
+    request(url,(data) => {
+        console.log(data);
+    });
 }
 
 build();
