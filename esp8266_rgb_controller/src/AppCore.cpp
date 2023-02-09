@@ -1,7 +1,11 @@
+#include <string>
+#include <sstream>
+
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include "ESPAsyncWebServer.h"
 
+#include "JSONBuilder.h"
 #include "config/WebServerConfig.h"
 #include "config/RGBControllerConfigs.h"
 #include "AppCore.h"
@@ -34,6 +38,27 @@ void AppCore::init_controllers()
     RGBController *cont = m_controllers.at(controller_1.id).get();
     cont->print_data();
 }
+
+std::string AppCore::get_controllers_data()
+{
+    JSONBuilder json(true);
+    
+    for (const std::pair<const std::uint8_t, rgb_controller_up> &pair : m_controllers)
+    {
+        RGBController *controller = pair.second.get();
+        JSONBuilder color_values;
+        color_values.
+            addPair("id", pair.first)->
+            addPair("red",controller->get_red_color())->
+            addPair("green",controller->get_green_color())->
+            addPair("blue",controller->get_blue_color());
+
+        json.push(color_values.build());
+    }
+
+    return json.build();
+}
+
 
 void AppCore::connect_to_network(const WebServerConfig &config)
 {
@@ -72,10 +97,11 @@ void AppCore::register_web_routes()
         request->send(200, "text/html", index_html);
     });
 
-    m_server->on("/get", HTTP_GET, [](AsyncWebServerRequest *request){
-        std::string response = "{\"message\":\"Route is in development!\"}";
+    m_server->on("/get", HTTP_GET, [core = this](AsyncWebServerRequest *request){
+        std::string response = core->get_controllers_data();
+        // std::string response = "{\"message\":\"Route is in development!\"}";
         Serial.println(response.c_str());
-        request->send(400, "application/json", response.c_str());
+        request->send(200, "application/json", response.c_str());
     });
 
     m_server->on("/update", HTTP_GET, [](AsyncWebServerRequest *request){

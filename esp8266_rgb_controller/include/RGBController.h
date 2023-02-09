@@ -16,6 +16,9 @@ private:
 public:
     RGBController(const RGBControllerConfig &config);
     void set_color(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
+    std::uint8_t get_red_color();
+    std::uint8_t get_green_color();
+    std::uint8_t get_blue_color();
     // Useful for debugging
     void print_data();
 };

@@ -20,6 +20,7 @@ public:
     AppCore(const WebServerConfig &web_config);
     ~AppCore();
     static void connect_to_network(const WebServerConfig &config);
+    std::string get_controllers_data();
 private:
     void init_controllers();
     void setup_access_point(const WebServerConfig &config);

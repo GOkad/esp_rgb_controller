@@ -34,6 +34,12 @@ const char index_html[] PROGMEM = R"rawliteral(
             border-radius: 5px;
         }
     </style>
+</head>
+<body>
+    <div id="error"></div>
+    <div id="main">
+        RGB Controlls
+    </div>
 
     <script>
         const errorContainer = document.querySelector('#error')
@@ -45,7 +51,7 @@ const char index_html[] PROGMEM = R"rawliteral(
             .then((data) => cb(data))
             .catch((error) => {
                 console.error( error );
-                displayError(error.message());
+                displayError(JSON.stringify(error));
             });
         }
 
@@ -64,17 +70,9 @@ const char index_html[] PROGMEM = R"rawliteral(
         function build() {
             request('/get', (data) => {
                 main.innerHTML = '';
-                const data = [
-                    {
-                        'id': 'ID',
-                        'r': 255,
-                        'g': 55,
-                        'b': 127,
-                    }
-                ];
                 data.forEach((controller)=>{
                     console.log(controller, main);
-                    const hexColor = toHex(controller.r)+''+toHex(controller.g)+''+toHex(controller.b);
+                    const hexColor = toHex(controller.red)+''+toHex(controller.green)+''+toHex(controller.blue);
 
                     main.innerHTML += `
                         <div class='rgb-controller'>
@@ -112,12 +110,6 @@ const char index_html[] PROGMEM = R"rawliteral(
 
         build();
     </script>
-</head>
-<body>
-    <div id="error"></div>
-    <div id="main">
-        RGB Controlls
-    </div>
 </body>
 </html>
 )rawliteral";
