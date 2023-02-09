@@ -9,6 +9,7 @@
 void setup() {
   Serial.begin(115200);
   Serial.println("");
+  AppCore::connect_to_network(WebServerConfig{});
 }
 
 void loop() {

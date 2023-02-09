@@ -15,6 +15,8 @@ struct WebServerConfig
     static inline const char* NETWORK_SSID     = "YourNetworkSSID";
     static inline const char* NETWORK_PASSWORD = "YourPassword";
 
+    static inline unsigned long NETWORK_CONNECTION_TIMEOUT = 10000;
+
     const char* ssid{SSID};
     const char* password{PASSWORD};
     const char* network_ssid{NETWORK_SSID};

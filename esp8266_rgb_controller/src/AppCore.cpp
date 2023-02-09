@@ -35,6 +35,31 @@ void AppCore::init_controllers()
     cont->print_data();
 }
 
+void AppCore::connect_to_network(const WebServerConfig &config)
+{
+    WiFi.begin(config.network_ssid, config.network_password);
+
+    unsigned long stamp = millis();
+    while (
+        WiFi.status() != WL_CONNECTED &&
+        ( millis() - stamp) < config.NETWORK_CONNECTION_TIMEOUT
+    )
+    {
+      delay(500);
+      Serial.print(".");
+    }
+
+    if ( WiFi.status() == WL_CONNECTED ) {
+      Serial.println("");
+      Serial.print("Connected to: ");
+      Serial.println(config.network_ssid);
+      Serial.print("IP address: ");
+      Serial.println(WiFi.localIP());
+    } else {
+      Serial.println("Failed to connect to network!");
+    }
+}
+
 void AppCore::setup_access_point(const WebServerConfig &config)
 {
     WiFi.softAP(config.ssid, config.password);
