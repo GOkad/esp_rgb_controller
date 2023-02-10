@@ -8,16 +8,20 @@ class JSONBuilder
 {
 private:
     std::stringstream m_stream;
-    bool m_use_array;
+    /**
+     * Is the main container an array;
+     * 
+     */
+    bool m_is_array;
 public:
-    JSONBuilder(bool use_array = false):
-        m_use_array{use_array}
+    JSONBuilder(bool is_array = false):
+        m_is_array{is_array}
     {
-        m_stream << (m_use_array ? '[' : '{');
+        m_stream << (m_is_array ? '[' : '{');
     }
     JSONBuilder* push(std::string entry)
     {
-        if (m_use_array)
+        if (m_is_array)
             m_stream << entry << ',';
 
         return this;
@@ -42,7 +46,7 @@ public:
         std::string data = m_stream.str();
         std::string json = data.substr(0, data.size()-1);
 
-        json += (m_use_array ? ']' : '}');
+        json += (m_is_array ? ']' : '}');
         return json;
     }
 

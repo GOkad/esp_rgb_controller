@@ -7,9 +7,12 @@
 struct WebServerConfig;
 class AsyncWebServer;
 using async_web_server_up = std::unique_ptr<AsyncWebServer>;
+class AsyncWebServerRequest;
 
 class RGBController;
 using rgb_controller_up = std::unique_ptr<RGBController>;
+
+class JSONBuilder;
 
 class AppCore
 {

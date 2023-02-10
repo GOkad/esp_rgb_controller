@@ -46,14 +46,14 @@ std::string AppCore::get_controllers_data()
     for (const std::pair<const std::uint8_t, rgb_controller_up> &pair : m_controllers)
     {
         RGBController *controller = pair.second.get();
-        JSONBuilder color_values;
-        color_values.
+        JSONBuilder controller_data;
+        controller_data.
             addPair("id", pair.first)->
             addPair("red",controller->get_red_color())->
             addPair("green",controller->get_green_color())->
             addPair("blue",controller->get_blue_color());
 
-        json.push(color_values.build());
+        json.push(controller_data.build());
     }
 
     return json.build();
@@ -82,20 +82,22 @@ void AppCore::connect_to_network(const WebServerConfig &config)
       Serial.print(".");
     }
 
-    if ( WiFi.status() == WL_CONNECTED ) {
-      Serial.println("");
-      Serial.print("Connected to: ");
-      Serial.println(config.network_ssid);
-      Serial.print("IP address: ");
-      Serial.println(WiFi.localIP());
-    } else {
-      Serial.println("Failed to connect to network!");
+    if ( WiFi.status() != WL_CONNECTED ) {
+        Serial.println("Failed to connect to network!");
+        return;
     }
+
+    Serial.println("");
+    Serial.print("Connected to: ");
+    Serial.println(config.network_ssid);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
 }
 
 void AppCore::setup_access_point(const WebServerConfig &config)
 {
     WiFi.softAP(config.ssid, config.password);
+
     Serial.println(WiFi.softAPIP().toString());
 }
 
@@ -107,7 +109,6 @@ void AppCore::register_web_routes()
 
     m_server->on("/get-data", HTTP_GET, [core = this](AsyncWebServerRequest *request){
         std::string response = core->get_controllers_data();
-        // std::string response = "{\"message\":\"Route is in development!\"}";
         Serial.println(response.c_str());
         request->send(200, "application/json", response.c_str());
     });
@@ -115,40 +116,33 @@ void AppCore::register_web_routes()
     m_server->on("/update-color", HTTP_GET, [core = this](AsyncWebServerRequest *request){
         std::uint16_t response_code = 200;
         JSONBuilder json;
+        std::vector<std::string> expected_payload = {"id","red","green","blue"};
 
-        if (
-            !request->hasParam("id") ||
-            !request->hasParam("red") ||
-            !request->hasParam("green") ||
-            !request->hasParam("blue")
-        )
+        for ( std::string key : expected_payload )
         {
-            if (!request->hasParam("id"))
-                json.addPair("id", "missing value");
-
-            if (!request->hasParam("red"))
-                json.addPair("red", "missing value");
-
-            if (!request->hasParam("green"))
-                json.addPair("green", "missing value");
-
-            if (!request->hasParam("blue"))
-                json.addPair("blue", "missing value");
-
-            response_code = 400;
+            if ( !request->hasParam(key.c_str()) )
+            {
+                json.addPair(key, "Missing value");
+                response_code = 400;
+            }
+        }
+        
+        if (response_code == 400)
+        {
             std::string response = json.build();
             Serial.println(response.c_str());
+
             request->send(response_code, "application/json", response.c_str());
         }
 
-        std::uint8_t id = request->hasParam("id");
-        std::uint8_t red = request->hasParam("red");
-        std::uint8_t green = request->hasParam("green");
-        std::uint8_t blue = request->hasParam("blue");
+        std::uint8_t id = std::stoi(request->getParam("id")->value().c_str());
+        std::uint8_t red = std::stoi(request->getParam("red")->value().c_str());
+        std::uint8_t green = std::stoi(request->getParam("green")->value().c_str());
+        std::uint8_t blue = std::stoi(request->getParam("blue")->value().c_str());
 
-        bool has_updated = core->set_color(id, red, green, blue);
+        bool has_color_updated = core->set_color(id, red, green, blue);
 
-        if ( has_updated ) {
+        if ( has_color_updated ) {
             json.addPair("message", "Updated sucessfully.");
         } else {
             std::string error_message = "Id not found: "+(id);
@@ -158,6 +152,7 @@ void AppCore::register_web_routes()
 
         std::string response = json.build();
         Serial.println(response.c_str());
+
         request->send(response_code, "application/json", response.c_str());
     });
 }
