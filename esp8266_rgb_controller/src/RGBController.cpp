@@ -5,6 +5,7 @@
 
 RGBController::RGBController(const RGBControllerConfig &config):
     m_common_cathode{config.common_cathode},
+    // Redundant info. Consider removing.
     m_id{config.id},
     m_red_pin{config.red_pin},
     m_green_pin{config.green_pin},

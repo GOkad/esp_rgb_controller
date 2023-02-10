@@ -9,6 +9,7 @@ class RGBController
 {
 private:
     bool m_common_cathode;
+    // Redundant info. Consider removing.
     std::uint8_t m_id;
     std::uint8_t m_red_pin;
     std::uint8_t m_green_pin;

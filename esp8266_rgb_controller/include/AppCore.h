@@ -21,6 +21,7 @@ public:
     ~AppCore();
     static void connect_to_network(const WebServerConfig &config);
     std::string get_controllers_data();
+    bool set_color(std::uint8_t id, std::uint8_t red, std::uint8_t green, std::uint8_t blue);
 private:
     void init_controllers();
     void setup_access_point(const WebServerConfig &config);

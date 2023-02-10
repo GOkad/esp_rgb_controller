@@ -59,6 +59,14 @@ std::string AppCore::get_controllers_data()
     return json.build();
 }
 
+bool AppCore::set_color(std::uint8_t id, std::uint8_t red, std::uint8_t green, std::uint8_t blue)
+{
+    if (m_controllers.find(id) == m_controllers.end())
+        return false;
+
+    m_controllers.at(id)->set_color(red, green, blue);
+    return true;
+}
 
 void AppCore::connect_to_network(const WebServerConfig &config)
 {
@@ -97,16 +105,59 @@ void AppCore::register_web_routes()
         request->send(200, "text/html", index_html);
     });
 
-    m_server->on("/get", HTTP_GET, [core = this](AsyncWebServerRequest *request){
+    m_server->on("/get-data", HTTP_GET, [core = this](AsyncWebServerRequest *request){
         std::string response = core->get_controllers_data();
         // std::string response = "{\"message\":\"Route is in development!\"}";
         Serial.println(response.c_str());
         request->send(200, "application/json", response.c_str());
     });
 
-    m_server->on("/update", HTTP_GET, [](AsyncWebServerRequest *request){
-        std::string response = "{\"message\":\"Route is in development!\"}";
+    m_server->on("/update-color", HTTP_GET, [core = this](AsyncWebServerRequest *request){
+        std::uint16_t response_code = 200;
+        JSONBuilder json;
+
+        if (
+            !request->hasParam("id") ||
+            !request->hasParam("red") ||
+            !request->hasParam("green") ||
+            !request->hasParam("blue")
+        )
+        {
+            if (!request->hasParam("id"))
+                json.addPair("id", "missing value");
+
+            if (!request->hasParam("red"))
+                json.addPair("red", "missing value");
+
+            if (!request->hasParam("green"))
+                json.addPair("green", "missing value");
+
+            if (!request->hasParam("blue"))
+                json.addPair("blue", "missing value");
+
+            response_code = 400;
+            std::string response = json.build();
+            Serial.println(response.c_str());
+            request->send(response_code, "application/json", response.c_str());
+        }
+
+        std::uint8_t id = request->hasParam("id");
+        std::uint8_t red = request->hasParam("red");
+        std::uint8_t green = request->hasParam("green");
+        std::uint8_t blue = request->hasParam("blue");
+
+        bool has_updated = core->set_color(id, red, green, blue);
+
+        if ( has_updated ) {
+            json.addPair("message", "Updated sucessfully.");
+        } else {
+            std::string error_message = "Id not found: "+(id);
+            json.addPair("message", error_message);
+            response_code = 400;
+        }
+
+        std::string response = json.build();
         Serial.println(response.c_str());
-        request->send(400, "application/json", response.c_str());
+        request->send(response_code, "application/json", response.c_str());
     });
 }

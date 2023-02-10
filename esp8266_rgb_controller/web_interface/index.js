@@ -24,7 +24,9 @@ function toHex( int ) {
 }
 
 function build() {
-    request('/get', (data) => {
+    // mock data
+    // [{"id": "1","red": "1","green": "1","blue": "1"}]
+    request('/get-data', (data) => {
         main.innerHTML = '';
         const data = [
             {
@@ -60,8 +62,12 @@ function build() {
 function update(cont) {
     const input = cont.querySelector("input");
     const color = input.value;
+    // mock data
+    // fail: {"<param>", "missing value"}
+    // fail: "message": "Id not found: "+(id);
+    // succ: {"message": "Updated sucessfully."}
 
-    const url = `/update?id=${input.name}&`+
+    const url = `/update-color?id=${input.name}&`+
         `red=${parseInt(color[1]+color[2], 16)}&`+
         `green=${parseInt(color[3]+color[4], 16)}&`+
         `blue=${parseInt(color[5]+color[6], 16)}`;
