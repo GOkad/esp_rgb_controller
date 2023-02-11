@@ -26,17 +26,37 @@ AppCore::~AppCore() = default;
 void AppCore::init_controllers()
 {
     /**
-     * Rethink this
+     * TODO: Refactor config init
      */
-    RGBControllerConfig controller_1 = {false, 1,14,15,16};
+
+    /**
+     * D1 mini pinout
+     *  - 15 > D8
+     *  - 13 > D7
+     *  - 12 > D6
+     */
+    RGBControllerConfig controller_1 = {true, 1,15,13,12};
 
     m_controllers.insert({
         controller_1.id,
         std::make_unique<RGBController>(controller_1)
     });
 
-    RGBController *cont = m_controllers.at(controller_1.id).get();
-    cont->print_data();
+    /**
+     * D1 mini pinout
+     *  - 14 > D5
+     *  -  5 > D2
+     *  -  4 > D1
+     */
+    RGBControllerConfig controller_2 = {false, 2, 14,5,4};
+    m_controllers.insert({
+        controller_2.id,
+        std::make_unique<RGBController>(controller_2)
+    });
+
+    for ( std::pair<const uint8_t, rgb_controller_up> &pair : m_controllers )
+        pair.second->print_data();
+
 }
 
 std::string AppCore::get_controllers_data()
@@ -139,6 +159,13 @@ void AppCore::register_web_routes()
         std::uint8_t red = std::stoi(request->getParam("red")->value().c_str());
         std::uint8_t green = std::stoi(request->getParam("green")->value().c_str());
         std::uint8_t blue = std::stoi(request->getParam("blue")->value().c_str());
+
+        Serial.print("Update controller: ");
+        Serial.println(id);
+        Serial.print("color: ");
+        Serial.print(red); Serial.print(" ");
+        Serial.print(green); Serial.print(" ");
+        Serial.println(blue);
 
         bool has_color_updated = core->set_color(id, red, green, blue);
 

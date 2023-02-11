@@ -14,28 +14,31 @@ RGBController::RGBController(const RGBControllerConfig &config):
     pinMode(m_red_pin, OUTPUT);
     pinMode(m_green_pin, OUTPUT);
     pinMode(m_blue_pin, OUTPUT);
+
+    std::uint8_t initial_value = m_common_cathode ? 0 : 255;
+    set_color( initial_value,initial_value,initial_value);
 }
 
 void RGBController::set_color(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
 {
-    digitalWrite(m_red_pin, red);
-    digitalWrite(m_green_pin, green);
-    digitalWrite(m_blue_pin, blue);
+    analogWrite(m_red_pin, m_common_cathode ? red : (255 - red));
+    analogWrite(m_green_pin, m_common_cathode ? green : (255 - green));
+    analogWrite(m_blue_pin, m_common_cathode ? blue : (255 - blue));
 }
 
 std::uint8_t RGBController::get_red_color()
 {
-    return digitalRead(m_red_pin);
+    return constrain(analogRead(m_red_pin), 0, 255);
 }
 
 std::uint8_t RGBController::get_green_color()
 {
-    return digitalRead(m_green_pin);
+    return constrain(analogRead(m_green_pin), 0, 255);
 }
 
 std::uint8_t RGBController::get_blue_color()
 {
-    return digitalRead(m_blue_pin);
+    return constrain(analogRead(m_blue_pin), 0, 255);
 }
 
 // Useful for debugging
