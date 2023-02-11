@@ -2,42 +2,15 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-        * {
-            padding:0;
-            font-size: 1em;
-        }
-        body {
-            background: #000;
-            color:#fff;
-        }
-        .rgb-controller {
-            border:1px solid #fff;
-            display: flex;
-            flex-flow: column;
-            row-gap: 15px;
-            padding:10px 
-        }
-        input {
-            height: 100px;
-            width:100%;
-        }
-        button {
-            padding: 10px 0;
-            width:100%;
-            background: #000;
-            color: #fff;
-            border:1px solid #fff;
-            border-radius: 5px;
-        }
-    </style>
-
+    <link rel="stylesheet" href="index.css"/>
     <script src="index.js" defer="true"></script>
 </head>
 <body>
-    <div id="error"></div>
-    <div id="main">
-        RGB Controlls
+    <div>
+        Access Point IP: 168.4.0.1 <br> 
+        Network IP: %LOCAL_NETWORK_IP%
     </div>
+
+    
 </body>
 </html>

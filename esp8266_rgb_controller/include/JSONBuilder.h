@@ -4,6 +4,9 @@
 #include <string>
 #include <sstream>
 
+/**
+ * TODO: remove '"' when casting value to int
+ */
 class JSONBuilder
 {
 private:
